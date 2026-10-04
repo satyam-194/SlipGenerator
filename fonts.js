@@ -14,3 +14,9 @@ Font.register({
   family: 'DotMatrix',
   src: '/fonts/DotMatrix.ttf?v=3',
 })
+
+// Art-deco display font (Righteous) for the Jaynath masthead and numerals
+Font.register({
+  family: 'Deco',
+  src: '/fonts/Deco.ttf?v=1',
+})

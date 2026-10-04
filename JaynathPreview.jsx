@@ -1,4 +1,5 @@
 import React from 'react'
+import SlipScaler from './SlipScaler.jsx'
 
 // Same palette + geometry as JaynathPDF.jsx (1pt = 1px here)
 const INK = '#3c5490'
@@ -28,19 +29,25 @@ const fmtTime = (t) => {
   return `${String(h % 12 || 12).padStart(2, '0')}:${m.slice(0, 2)} ${ap}`
 }
 
-function Band({ children, style }) {
+const DECO = "'Deco', 'Arial Black', sans-serif"
+const sideSmall = { fontSize: 8.6, fontWeight: 700, fontFamily: SANS, color: '#fff', textAlign: 'center', lineHeight: 1.25 }
+
+// Solid blue square with thin white keyline inset and white text
+function SideBox({ left, children }) {
   return (
-    <div style={{ backgroundColor: INK, width: '100%', padding: '2.5px 1px', textAlign: 'center', boxSizing: 'border-box', ...style }}>
-      {children}
+    <div style={{ position: 'absolute', left, top: 24, width: 92, height: 92, boxSizing: 'border-box', border: `1px solid ${INK}`, padding: 1.5 }}>
+      <div style={{ position: 'relative', height: '100%', backgroundColor: INK, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ position: 'absolute', inset: 2.5, border: '1.2px solid #ffffff' }} />
+        {children}
+      </div>
     </div>
   )
 }
-const bandTxt = { fontSize: 8, fontWeight: 700, fontFamily: SANS, color: '#fff', lineHeight: 1.25 }
 
 export default function JaynathPreview({ data }) {
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <div style={{ position: 'relative', width: PAGE_W, height: PAGE_H, backgroundColor: PAPER, margin: '0 auto', boxShadow: '0 1px 6px rgba(0,0,0,.25)' }}>
+    <SlipScaler width={PAGE_W} height={PAGE_H}>
+      <div style={{ position: 'relative', width: PAGE_W, height: PAGE_H, backgroundColor: PAPER, boxShadow: '0 1px 6px rgba(0,0,0,.25)' }}>
 
         {/* Outer border */}
         <div style={{ position: 'absolute', left: 8, top: 8, width: PAGE_W - 16, height: PAGE_H - 16, boxSizing: 'border-box', border: `1.5px solid ${INK}` }} />
@@ -50,32 +57,22 @@ export default function JaynathPreview({ data }) {
         <span style={{ ...guj, fontSize: 7, left: 420, top: 13 }}>॥ શ્રી શક્તિ કૃપા ॥</span>
 
         {/* 50 box */}
-        <div style={{ position: 'absolute', left: 74, top: 28, width: 96, height: 82, boxSizing: 'border-box', border: `2.5px solid ${INK}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: 40, fontWeight: 700, fontFamily: SANS, color: INK, lineHeight: 1 }}>50</span>
-          </div>
-          <Band>
-            <div style={bandTxt}>METRIC TONS</div>
-            <div style={bandTxt}>COMPUTERISED</div>
-          </Band>
-        </div>
+        <SideBox left={74}>
+          <span style={{ fontSize: 42, fontFamily: DECO, color: '#fff', lineHeight: 1 }}>50</span>
+          <div style={{ ...sideSmall, marginTop: 3 }}>METRIC TONS</div>
+          <div style={sideSmall}>COMPUTERISED</div>
+        </SideBox>
 
         {/* 24 box */}
-        <div style={{ position: 'absolute', left: 712, top: 28, width: 92, height: 82, boxSizing: 'border-box', border: `2.5px solid ${INK}`, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <Band style={{ padding: '2px 1px' }}>
-            <div style={bandTxt}>SERVICE</div>
-          </Band>
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <span style={{ fontSize: 30, fontWeight: 700, fontFamily: SANS, color: INK, lineHeight: 1 }}>24</span>
-          </div>
-          <Band style={{ padding: '2px 1px' }}>
-            <div style={bandTxt}>HOURS</div>
-          </Band>
-        </div>
+        <SideBox left={712}>
+          <div style={{ ...sideSmall, fontSize: 10 }}>SERVICE</div>
+          <span style={{ fontSize: 38, fontFamily: DECO, color: '#fff', lineHeight: 1 }}>24</span>
+          <div style={{ ...sideSmall, fontSize: 10 }}>HOURS</div>
+        </SideBox>
 
         {/* Header center */}
-        <div style={{ position: 'absolute', left: 178, top: 28, width: 526, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div style={{ fontSize: 32, fontWeight: 700, fontFamily: SANS, color: INK, letterSpacing: 1.5, whiteSpace: 'nowrap', lineHeight: 1.1 }}>JAYNATH WEIGH BRIDGE</div>
+        <div style={{ position: 'absolute', left: 178, top: 26, width: 526, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div style={{ fontSize: 36, fontFamily: DECO, color: INK, letterSpacing: 2, whiteSpace: 'nowrap', lineHeight: 1.1 }}>JAYNATH WEIGH BRIDGE</div>
           <div style={{ backgroundColor: INK, padding: '3.5px 70px', marginTop: 2 }}>
             <span style={{ color: '#fff', fontSize: 12.5, fontWeight: 700, fontFamily: SANS, whiteSpace: 'nowrap' }}>Prop. : Kirti Industries</span>
           </div>
@@ -131,6 +128,6 @@ export default function JaynathPreview({ data }) {
         <span style={{ position: 'absolute', left: 80, top: 428, fontSize: 11.5, fontFamily: SANS, color: INK, whiteSpace: 'nowrap' }}>Subject to Rajkot Jurisdiction.</span>
 
       </div>
-    </div>
+    </SlipScaler>
   )
 }

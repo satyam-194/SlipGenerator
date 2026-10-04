@@ -170,7 +170,7 @@ function SlipGenerator() {
 
   return (
     <div className={`min-h-screen ${theme.page}`}>
-      <nav className={`bg-white border-b-2 ${theme.nav} px-8 py-3 flex items-center gap-3`}>
+      <nav className={`bg-white border-b-2 ${theme.nav} px-4 md:px-8 py-3 flex items-center gap-3`}>
         <span className="text-2xl">🧾</span>
         <div>
           <div className={`text-lg font-extrabold ${theme.title} leading-none`}>WEIGH BRIDGE SLIP GENERATOR</div>
@@ -195,7 +195,7 @@ function SlipGenerator() {
         {/* Main */}
         <main className="flex-1 min-w-0 px-4 py-8 space-y-8">
           {/* Mobile template selector */}
-          <div className="md:hidden flex gap-3">
+          <div className="md:hidden grid grid-cols-1 sm:grid-cols-2 gap-3">
             {TEMPLATES.map((t) => (
               <TemplateCard key={t.id} t={t} active={t.id === templateId} onSelect={setTemplateId} />
             ))}
@@ -203,29 +203,29 @@ function SlipGenerator() {
 
           <div className={`bg-white border-2 ${theme.card} rounded-2xl p-6 shadow`}>
             <h2 className={`text-lg font-bold ${theme.heading} mb-5 border-b ${theme.headingBorder} pb-2`}>📋 Fill Slip Details</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div><label className={labelClass}>{labels.serialNo}</label><input className={inputClass} name="serialNo" value={data.serialNo} onChange={handleChange} placeholder="e.g. 1001" /></div>
               <div><label className={labelClass}>Vehicle No.</label><input className={inputClass} name="vehicleNo" value={data.vehicleNo} onChange={handleChange} placeholder="e.g. GJ03AB1234" /></div>
               <div><label className={labelClass}>{labels.party}</label><input className={inputClass} name="party" value={data.party} onChange={handleChange} placeholder={`${labels.party} name`} /></div>
               <div><label className={labelClass}>{labels.material}</label><input className={inputClass} name="material" value={data.material} onChange={handleChange} placeholder="e.g. Sand" /></div>
             </div>
             {isJaynath && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
                 <div><label className={labelClass}>Supplier Name</label><input className={inputClass} name="supplierName" value={data.supplierName} onChange={handleChange} placeholder="Supplier name" /></div>
                 <div><label className={labelClass}>Charges (₹)</label><input className={inputClass} name="charges" value={data.charges} onChange={handleChange} placeholder="e.g. 180" /></div>
               </div>
             )}
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <div><label className={labelClass}>Gross Weight (KG)</label><input className={inputClass} name="gross" type="number" value={data.gross} onChange={handleChange} placeholder="e.g. 15000" /></div>
               <div><label className={labelClass}>Gross Date</label><input className={inputClass} name="grossDate" type="date" value={data.grossDate} onChange={handleChange} /></div>
               <div><label className={labelClass}>Gross Time</label><input className={inputClass} name="grossTime" type="time" value={data.grossTime} onChange={handleChange} /></div>
             </div>
-            <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <div><label className={labelClass}>Tare Weight (KG)</label><input className={inputClass} name="tare" type="number" value={data.tare} onChange={handleChange} placeholder="e.g. 5000" /></div>
               <div><label className={labelClass}>Tare Date</label><input className={inputClass} name="tareDate" type="date" value={data.tareDate} onChange={handleChange} /></div>
               <div><label className={labelClass}>Tare Time</label><input className={inputClass} name="tareTime" type="time" value={data.tareTime} onChange={handleChange} /></div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div><label className={labelClass}>Net Weight (KG) — Auto Calculated</label><input className={`${inputClass} ${theme.net} font-bold`} name="net" value={data.net} readOnly placeholder="Auto calculated" /></div>
             </div>
           </div>

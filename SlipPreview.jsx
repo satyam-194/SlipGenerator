@@ -1,4 +1,5 @@
 import React from 'react'
+import SlipScaler from './SlipScaler.jsx'
 
 // Same palette + geometry as WeighBridgePDF.jsx (1pt = 1px here)
 const INK = '#e13464'
@@ -118,8 +119,8 @@ function SideBox({ left, num, lines, small }) {
 
 export default function SlipPreview({ data }) {
   return (
-    <div style={{ overflowX: 'auto' }}>
-      <div style={{ position: 'relative', width: PAGE_W, height: PAGE_H, backgroundColor: PAPER, margin: '0 auto', boxShadow: '0 1px 6px rgba(0,0,0,.25)' }}>
+    <SlipScaler width={PAGE_W} height={PAGE_H}>
+      <div style={{ position: 'relative', width: PAGE_W, height: PAGE_H, backgroundColor: PAPER, boxShadow: '0 1px 6px rgba(0,0,0,.25)' }}>
 
         {/* Outer printed border */}
         <div style={{ position: 'absolute', left: 4, top: 4, width: PAGE_W - 22, height: PAGE_H - 8, boxSizing: 'border-box', border: `2.5px solid ${INK}` }} />
@@ -181,6 +182,6 @@ export default function SlipPreview({ data }) {
         </div>
 
       </div>
-    </div>
+    </SlipScaler>
   )
 }

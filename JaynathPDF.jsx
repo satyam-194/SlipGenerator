@@ -19,20 +19,23 @@ const S = StyleSheet.create({
   },
   blessing: { position: 'absolute', fontSize: 7, fontFamily: 'NotoGujarati', fontWeight: 400, color: INK },
 
-  // side boxes
+  // side boxes: solid blue square, thin white keyline inset, white text,
+  // single thin outer border tight against the square
   sideBox: {
-    position: 'absolute', top: 28, width: 96, height: 82,
-    border: `2.5 solid ${INK}`, flexDirection: 'column', alignItems: 'center',
+    position: 'absolute', top: 24, width: 92, height: 92,
+    border: `1 solid ${INK}`, padding: 1.5,
   },
-  sideNumWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  sideNum50: { fontSize: 40, fontFamily: 'Helvetica-Bold', color: INK },
-  sideNum24: { fontSize: 30, fontFamily: 'Helvetica-Bold', color: INK },
-  sideBand: { backgroundColor: INK, width: '100%', paddingVertical: 2.5, paddingHorizontal: 1 },
-  sideBandTxt: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
+  sideBoxBlue: {
+    flex: 1, backgroundColor: INK, alignItems: 'center', justifyContent: 'center', position: 'relative',
+  },
+  sideKeyline: { position: 'absolute', left: 2.5, top: 2.5, right: 2.5, bottom: 2.5, border: '1.2 solid #ffffff' },
+  sideNum: { fontSize: 42, fontFamily: 'Deco', color: '#ffffff', lineHeight: 1 },
+  sideNum24: { fontSize: 38, fontFamily: 'Deco', color: '#ffffff', lineHeight: 1 },
+  sideSmall: { fontSize: 8.6, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
 
   // header center
-  center: { position: 'absolute', left: 178, top: 28, width: 526, alignItems: 'center' },
-  title: { fontSize: 32, fontFamily: 'Helvetica-Bold', color: INK, letterSpacing: 1.5 },
+  center: { position: 'absolute', left: 178, top: 26, width: 526, alignItems: 'center' },
+  title: { fontSize: 36, fontFamily: 'Deco', color: INK, letterSpacing: 2 },
   propBand: { backgroundColor: INK, paddingHorizontal: 70, paddingVertical: 3.5, marginTop: 2 },
   propTxt: { color: '#ffffff', fontSize: 12.5, fontFamily: 'Helvetica-Bold' },
   address: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: INK, marginTop: 4 },
@@ -75,27 +78,23 @@ export default function JaynathPDF({ data }) {
         <Text style={[S.blessing, { left: 150, top: 13 }]}>॥ સત્યમેવ જયતે ॥</Text>
         <Text style={[S.blessing, { left: 420, top: 13 }]}>॥ શ્રી શક્તિ કૃપા ॥</Text>
 
-        {/* 50 METRIC TONS box (left) */}
+        {/* 50 METRIC TONS box (left): white 50 over solid blue */}
         <View style={[S.sideBox, { left: 74 }]}>
-          <View style={S.sideNumWrap}>
-            <Text style={S.sideNum50}>50</Text>
-          </View>
-          <View style={S.sideBand}>
-            <Text style={S.sideBandTxt}>METRIC TONS</Text>
-            <Text style={S.sideBandTxt}>COMPUTERISED</Text>
+          <View style={S.sideBoxBlue}>
+            <View style={S.sideKeyline} />
+            <Text style={S.sideNum}>50</Text>
+            <Text style={[S.sideSmall, { marginTop: 3 }]}>METRIC TONS</Text>
+            <Text style={S.sideSmall}>COMPUTERISED</Text>
           </View>
         </View>
 
-        {/* SERVICE 24 HOURS box (right) */}
-        <View style={[S.sideBox, { left: 712, width: 92 }]}>
-          <View style={[S.sideBand, { paddingVertical: 2 }]}>
-            <Text style={S.sideBandTxt}>SERVICE</Text>
-          </View>
-          <View style={S.sideNumWrap}>
+        {/* SERVICE 24 HOURS box (right): white text over solid blue */}
+        <View style={[S.sideBox, { left: 712 }]}>
+          <View style={S.sideBoxBlue}>
+            <View style={S.sideKeyline} />
+            <Text style={[S.sideSmall, { fontSize: 10 }]}>SERVICE</Text>
             <Text style={S.sideNum24}>24</Text>
-          </View>
-          <View style={[S.sideBand, { paddingVertical: 2 }]}>
-            <Text style={S.sideBandTxt}>HOURS</Text>
+            <Text style={[S.sideSmall, { fontSize: 10 }]}>HOURS</Text>
           </View>
         </View>
 
