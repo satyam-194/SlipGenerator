@@ -19,6 +19,15 @@ const guj = { position: 'absolute', fontSize: 10.5, fontFamily: GUJ, fontWeight:
 const fmtDateSlash = (d) => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('/') : d)
 const fmtCharges = (c) => (c ? (/[/-]\s*$/.test(c) ? c : `${c}/-`) : '')
 
+// 'HH:MM' (24h) -> 'hh:MM AM/PM'
+const fmtTime = (t) => {
+  if (!t || !/^\d{1,2}:\d{2}/.test(t)) return t
+  const [hs, m] = t.split(':')
+  const h = parseInt(hs, 10)
+  const ap = h >= 12 ? 'PM' : 'AM'
+  return `${String(h % 12 || 12).padStart(2, '0')}:${m.slice(0, 2)} ${ap}`
+}
+
 function Band({ children, style }) {
   return (
     <div style={{ backgroundColor: INK, width: '100%', padding: '2.5px 1px', textAlign: 'center', boxSizing: 'border-box', ...style }}>
@@ -101,11 +110,11 @@ export default function JaynathPreview({ data }) {
         <span style={{ ...lbl, left: 440, top: 240 }}>Gross Date</span>
         <span style={{ ...lbl, left: 548, top: 240 }}>:</span>
         <span style={{ ...val, left: 575, top: 238 }}>{fmtDateSlash(data.grossDate)}</span>
-        <span style={{ ...val, left: 718, top: 240, fontSize: 12 }}>{data.grossTime}</span>
+        <span style={{ ...val, left: 700, top: 240, fontSize: 12 }}>{fmtTime(data.grossTime)}</span>
         <span style={{ ...lbl, left: 440, top: 282 }}>Tare Date</span>
         <span style={{ ...lbl, left: 548, top: 282 }}>:</span>
         <span style={{ ...val, left: 575, top: 280 }}>{fmtDateSlash(data.tareDate)}</span>
-        <span style={{ ...val, left: 718, top: 282, fontSize: 12 }}>{data.tareTime}</span>
+        <span style={{ ...val, left: 700, top: 282, fontSize: 12 }}>{fmtTime(data.tareTime)}</span>
         <span style={{ ...lbl, left: 440, top: 324 }}>Charges</span>
         <span style={{ ...lbl, left: 548, top: 324 }}>:</span>
         <span style={{ ...val, left: 700, top: 315 }}>{fmtCharges(data.charges)}</span>

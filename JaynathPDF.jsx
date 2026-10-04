@@ -55,6 +55,15 @@ const fmtDateSlash = (d) => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').r
 // append '/-' to charges if plain number entered
 const fmtCharges = (c) => (c ? (/[/-]\s*$/.test(c) ? c : `${c}/-`) : '')
 
+// 'HH:MM' (24h) -> 'hh:MM AM/PM'
+const fmtTime = (t) => {
+  if (!t || !/^\d{1,2}:\d{2}/.test(t)) return t
+  const [hs, m] = t.split(':')
+  const h = parseInt(hs, 10)
+  const ap = h >= 12 ? 'PM' : 'AM'
+  return `${String(h % 12 || 12).padStart(2, '0')}:${m.slice(0, 2)} ${ap}`
+}
+
 export default function JaynathPDF({ data }) {
   return (
     <Document>
@@ -127,11 +136,11 @@ export default function JaynathPDF({ data }) {
         <Text style={[S.lbl, { left: 440, top: 240 }]}>Gross Date</Text>
         <Text style={[S.lbl, { left: 548, top: 240 }]}>:</Text>
         <Text style={[S.val, { left: 575, top: 238 }]}>{fmtDateSlash(data.grossDate) || ' '}</Text>
-        <Text style={[S.val, { left: 718, top: 238, fontSize: 12 }]}>{data.grossTime || ' '}</Text>
+        <Text style={[S.val, { left: 700, top: 238, fontSize: 12 }]}>{fmtTime(data.grossTime) || ' '}</Text>
         <Text style={[S.lbl, { left: 440, top: 282 }]}>Tare Date</Text>
         <Text style={[S.lbl, { left: 548, top: 282 }]}>:</Text>
         <Text style={[S.val, { left: 575, top: 280 }]}>{fmtDateSlash(data.tareDate) || ' '}</Text>
-        <Text style={[S.val, { left: 718, top: 280, fontSize: 12 }]}>{data.tareTime || ' '}</Text>
+        <Text style={[S.val, { left: 700, top: 280, fontSize: 12 }]}>{fmtTime(data.tareTime) || ' '}</Text>
         <Text style={[S.lbl, { left: 440, top: 324 }]}>Charges</Text>
         <Text style={[S.lbl, { left: 548, top: 324 }]}>:</Text>
         <Text style={[S.val, { left: 700, top: 315 }]}>{fmtCharges(data.charges) || ' '}</Text>

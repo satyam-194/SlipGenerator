@@ -82,6 +82,15 @@ function WeighRow({ y, icon, label, value, kg, date, dateVal, time, timeVal }) {
 // 'YYYY-MM-DD' -> 'DD-MM-YYYY'
 const fmtDate = (d) => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('-') : d)
 
+// 'HH:MM' (24h) -> 'hh:MM AM/PM'
+const fmtTime = (t) => {
+  if (!t || !/^\d{1,2}:\d{2}/.test(t)) return t
+  const [hs, m] = t.split(':')
+  const h = parseInt(hs, 10)
+  const ap = h >= 12 ? 'PM' : 'AM'
+  return `${String(h % 12 || 12).padStart(2, '0')}:${m.slice(0, 2)} ${ap}`
+}
+
 const NOTE_LINES = [
   'વે-બ્રિજ થી નિકળ્યા બાદ વજનમાં થતાં ફેરફાર માટે વે-બ્રિજ જવાબદાર નથી.',
   'કહેવાથી લખાવેલ બારદાન માટે વે-બ્રિજ જવાબદાર નથી.',
@@ -141,9 +150,9 @@ export default function SlipPreview({ data }) {
           <span style={{ ...val, left: 634, top: 44 }}>{data.material}</span>
 
           <WeighRow y={ROW.gross} icon={<TruckLoadedIcon />} label="GROSS :" value={data.gross}
-            kg date dateVal={fmtDate(data.grossDate)} time timeVal={data.grossTime} />
+            kg date dateVal={fmtDate(data.grossDate)} time timeVal={fmtTime(data.grossTime)} />
           <WeighRow y={ROW.tare} icon={<TruckEmptyIcon />} label="TARE :" value={data.tare}
-            kg date dateVal={fmtDate(data.tareDate)} time timeVal={data.tareTime} />
+            kg date dateVal={fmtDate(data.tareDate)} time timeVal={fmtTime(data.tareTime)} />
           <WeighRow y={ROW.net} icon={<NetGridIcon />} label="NET :" value={data.net} kg />
         </div>
 

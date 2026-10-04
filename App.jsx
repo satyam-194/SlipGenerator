@@ -146,21 +146,35 @@ function SlipGenerator() {
       a.download = `${template.id}_${data.party ? data.party.trim().replace(/\s+/g, '_') : 'slip'}.pdf`
       a.click()
       URL.revokeObjectURL(url)
+      setData(initialData)
     } finally {
       setGenerating(false)
     }
   }
 
-  const inputClass = "border border-red-300 rounded px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-1 focus:ring-red-400 bg-white"
-  const labelClass = "text-xs font-semibold text-red-700 mb-1 block"
+  // Form chrome follows the selected template's color scheme
+  const theme = isJaynath
+    ? {
+        page: 'bg-blue-50', nav: 'border-blue-900', title: 'text-blue-900', sub: 'text-blue-400',
+        card: 'border-blue-200', heading: 'text-blue-900', headingBorder: 'border-blue-100',
+        label: 'text-blue-900', input: 'border-blue-300 focus:ring-blue-400', net: 'bg-blue-50 text-blue-900',
+      }
+    : {
+        page: 'bg-red-50', nav: 'border-red-600', title: 'text-red-600', sub: 'text-red-400',
+        card: 'border-red-200', heading: 'text-red-600', headingBorder: 'border-red-100',
+        label: 'text-red-700', input: 'border-red-300 focus:ring-red-400', net: 'bg-red-50 text-red-700',
+      }
+
+  const inputClass = `border ${theme.input} rounded px-2 py-1.5 text-sm w-full focus:outline-none focus:ring-1 bg-white`
+  const labelClass = `text-xs font-semibold ${theme.label} mb-1 block`
 
   return (
-    <div className="min-h-screen bg-red-50">
-      <nav className="bg-white border-b-2 border-red-600 px-8 py-3 flex items-center gap-3">
+    <div className={`min-h-screen ${theme.page}`}>
+      <nav className={`bg-white border-b-2 ${theme.nav} px-8 py-3 flex items-center gap-3`}>
         <span className="text-2xl">🧾</span>
         <div>
-          <div className="text-lg font-extrabold text-red-600 leading-none">WEIGH BRIDGE SLIP GENERATOR</div>
-          <div className="text-xs text-red-400">{template.name}</div>
+          <div className={`text-lg font-extrabold ${theme.title} leading-none`}>WEIGH BRIDGE SLIP GENERATOR</div>
+          <div className={`text-xs ${theme.sub}`}>{template.name}</div>
         </div>
       </nav>
 
@@ -187,8 +201,8 @@ function SlipGenerator() {
             ))}
           </div>
 
-          <div className="bg-white border-2 border-red-200 rounded-2xl p-6 shadow">
-            <h2 className="text-lg font-bold text-red-600 mb-5 border-b border-red-100 pb-2">📋 Fill Slip Details</h2>
+          <div className={`bg-white border-2 ${theme.card} rounded-2xl p-6 shadow`}>
+            <h2 className={`text-lg font-bold ${theme.heading} mb-5 border-b ${theme.headingBorder} pb-2`}>📋 Fill Slip Details</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
               <div><label className={labelClass}>{labels.serialNo}</label><input className={inputClass} name="serialNo" value={data.serialNo} onChange={handleChange} placeholder="e.g. 1001" /></div>
               <div><label className={labelClass}>Vehicle No.</label><input className={inputClass} name="vehicleNo" value={data.vehicleNo} onChange={handleChange} placeholder="e.g. GJ03AB1234" /></div>
@@ -212,12 +226,12 @@ function SlipGenerator() {
               <div><label className={labelClass}>Tare Time</label><input className={inputClass} name="tareTime" type="time" value={data.tareTime} onChange={handleChange} /></div>
             </div>
             <div className="grid grid-cols-3 gap-4">
-              <div><label className={labelClass}>Net Weight (KG) — Auto Calculated</label><input className={`${inputClass} bg-red-50 font-bold text-red-700`} name="net" value={data.net} readOnly placeholder="Auto calculated" /></div>
+              <div><label className={labelClass}>Net Weight (KG) — Auto Calculated</label><input className={`${inputClass} ${theme.net} font-bold`} name="net" value={data.net} readOnly placeholder="Auto calculated" /></div>
             </div>
           </div>
 
-          <div className="bg-white border-2 border-red-200 rounded-2xl p-6 shadow">
-            <h2 className="text-lg font-bold text-red-600 mb-5 border-b border-red-100 pb-2">👁️ Live Preview — {template.name}</h2>
+          <div className={`bg-white border-2 ${theme.card} rounded-2xl p-6 shadow`}>
+            <h2 className={`text-lg font-bold ${theme.heading} mb-5 border-b ${theme.headingBorder} pb-2`}>👁️ Live Preview — {template.name}</h2>
             <Preview data={data} />
           </div>
 
