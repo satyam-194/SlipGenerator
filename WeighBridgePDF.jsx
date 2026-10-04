@@ -1,198 +1,225 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet, Font, Svg, Rect, Line, Path } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Svg, Rect, Circle } from '@react-pdf/renderer'
+import './fonts.js'
 
-Font.register({
-  family: 'NotoGujarati',
-  src: '/fonts/NotoSansGujarati.ttf',
-})
+// Palette sampled from the original printed slip scan
+const INK = '#e13464'
+const PAPER = '#fce3f2'
+const BOX_BG = '#fdf0f9'
+const VAL = '#1a1a1a'
 
-const R = '#cc0000'
-const W = '#ffffff'
-const BG = '#fff0f0'
+// Page geometry: scan is 1054x568 px -> 850x458 pt (scale 0.8065)
+const PAGE_W = 850
+const PAGE_H = 458
 
 const S = StyleSheet.create({
-  page: { backgroundColor: BG, padding: 12, fontFamily: 'Helvetica' },
-  outer: { border: '2px solid #cc0000', padding: 8 },
+  page: { backgroundColor: PAPER, fontFamily: 'Helvetica' },
+  outerBorder: {
+    position: 'absolute', left: 4, top: 4, width: PAGE_W - 22, height: PAGE_H - 8,
+    border: `2.5 solid ${INK}`,
+  },
 
-  // Header
-  header: { flexDirection: 'row', alignItems: 'stretch', borderBottom: '2px solid #cc0000', paddingBottom: 6, marginBottom: 8 },
-  sideBox: { width: 75, border: '2px solid #cc0000', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' },
+  // ---- header side boxes ----
+  sideBox: {
+    position: 'absolute', top: 11, width: 90, height: 103,
+    border: `2.8 solid ${INK}`, backgroundColor: PAPER,
+    flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between',
+  },
   sideNumWrap: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  sideNum: { fontSize: 48, fontFamily: 'Helvetica-Bold', color: '#cc0000', textAlign: 'center' },
-  sideBadge: { backgroundColor: '#cc0000', width: '100%', paddingVertical: 4, paddingHorizontal: 2 },
-  sideTxt: { fontSize: 9, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
-  center: { flex: 1, alignItems: 'center', justifyContent: 'center', marginHorizontal: 10 },
-  companyName: { fontSize: 34, fontFamily: 'Helvetica-Bold', color: '#cc0000', textAlign: 'center' },
-  banner: { backgroundColor: '#cc0000', paddingHorizontal: 14, paddingVertical: 5, marginVertical: 4, width: '100%' },
-  bannerTxt: { color: '#ffffff', fontSize: 17, fontFamily: 'Helvetica-Bold', textAlign: 'center' },
-  address: { fontSize: 11, color: '#cc0000', textAlign: 'center' },
-  approved: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: '#cc0000', textAlign: 'center' },
+  sideNum: { fontSize: 52, fontFamily: 'Helvetica-Bold', color: INK },
+  sideBadge: { backgroundColor: INK, width: '100%', paddingVertical: 3.5, paddingHorizontal: 1 },
+  sideTxt: { fontSize: 10.5, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
+  sideTxtSm: { fontSize: 8.6, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
 
-  // Fields
-  fieldsBlock: { borderBottom: '1px solid #cc0000', paddingBottom: 6, marginBottom: 6 },
-  row: { flexDirection: 'row', marginBottom: 8 },
-  grp: { flexDirection: 'row', flex: 1, alignItems: 'flex-end' },
-  lbl: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#cc0000', marginRight: 4 },
-  val: { fontSize: 11, color: '#111', borderBottom: '1px solid #cc0000', flex: 1, paddingBottom: 1, minHeight: 16 },
+  // ---- header center ----
+  center: { position: 'absolute', left: 106, top: 8, width: 624, alignItems: 'center' },
+  companyName: { fontSize: 30, fontFamily: 'Times-Bold', color: INK, textAlign: 'center' },
+  banner: { backgroundColor: INK, paddingHorizontal: 28, paddingVertical: 3.5, marginTop: 2 },
+  bannerTxt: { color: '#ffffff', fontSize: 15.5, fontFamily: 'Helvetica-Bold', textAlign: 'center', letterSpacing: 0.8 },
+  address: { fontSize: 13.5, color: INK, textAlign: 'center', marginTop: 4 },
+  approved: { fontSize: 16, fontFamily: 'Helvetica-Bold', color: INK, textAlign: 'center', marginTop: 1 },
 
-  // Weigh rows
-  wRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 8 },
-  wIcon: { width: 50, marginRight: 6 },
-  wLbl: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: '#cc0000', width: 56 },
-  wVal: { fontSize: 12, color: '#111', borderBottom: '1px solid #cc0000', width: 90, paddingBottom: 1, minHeight: 16 },
-  kg: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: '#cc0000', marginHorizontal: 5 },
-  dLbl: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: '#cc0000', marginRight: 4 },
-  dVal: { fontSize: 12, color: '#111', borderBottom: '1px solid #cc0000', width: 90, paddingBottom: 1, minHeight: 16, marginRight: 6 },
-  tLbl: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: '#cc0000', marginRight: 4 },
-  tVal: { fontSize: 12, color: '#111', borderBottom: '1px solid #cc0000', width: 70, paddingBottom: 1, minHeight: 16 },
+  // ---- fields box ----
+  fieldsBox: {
+    position: 'absolute', left: 14, top: 125, width: PAGE_W - 40, height: 220,
+    border: `2.5 solid ${INK}`, backgroundColor: BOX_BG,
+  },
+  lbl: { position: 'absolute', fontSize: 13, fontFamily: 'Helvetica-Bold', color: INK },
+  val: { position: 'absolute', fontSize: 13, fontFamily: 'Helvetica', color: VAL },
+  wLbl: { position: 'absolute', fontSize: 13.5, fontFamily: 'Helvetica-Bold', color: INK },
+  wVal: { position: 'absolute', fontSize: 13.5, fontFamily: 'Helvetica', color: VAL },
+  icon: { position: 'absolute' },
 
-  // Notes
-  notes: { borderTop: '1px solid #cc0000', paddingTop: 4, marginTop: 4 },
-  guj: { fontSize: 8.5, color: '#cc0000', fontFamily: 'NotoGujarati', marginBottom: 2.5 },
-  lat: { fontSize: 8.5, color: '#cc0000', marginBottom: 2.5 },
-  sigRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: 5 },
-  sig: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#cc0000' },
+  // ---- notes ----
+  noteRow: { position: 'absolute', flexDirection: 'row', alignItems: 'center' },
+  gujLead: { fontSize: 11.5, fontFamily: 'NotoGujarati', fontWeight: 700, color: INK },
+  guj: { fontSize: 10.8, fontFamily: 'NotoGujarati', fontWeight: 700, color: INK },
+  lat: { fontSize: 12, fontFamily: 'Helvetica', color: INK },
+  bullet: { width: 6.5, height: 6.5, backgroundColor: INK, marginRight: 7 },
+  sig: { position: 'absolute', fontSize: 12.5, fontFamily: 'Helvetica-Bold', color: INK },
+
+  credit: { fontSize: 8, color: INK, fontFamily: 'Helvetica', textAlign: 'left', letterSpacing: 0.3 },
 })
+
+// Dot-matrix loaded truck (GROSS)
+function TruckLoadedIcon() {
+  const dots = []
+  for (let r = 0; r < 4; r++)
+    for (let c = 0; c < 7; c++)
+      dots.push(<Rect key={`d${r}-${c}`} x={1 + c * 4.2} y={1 + r * 4.2} width={3.1} height={3.1} fill={INK} />)
+  return (
+    <Svg viewBox="0 0 46 30" width={46} height={30}>
+      {dots}
+      <Rect x={0.5} y={17.5} width={33.5} height={4} fill={INK} />
+      <Rect x={34} y={9} width={9.5} height={12.5} fill={INK} />
+      <Rect x={35.6} y={10.8} width={4.2} height={4.2} fill={BOX_BG} />
+      <Circle cx={7} cy={25.5} r={3} fill={INK} />
+      <Circle cx={17} cy={25.5} r={3} fill={INK} />
+      <Circle cx={37.5} cy={25.5} r={3} fill={INK} />
+    </Svg>
+  )
+}
+
+// Dot-matrix empty truck (TARE)
+function TruckEmptyIcon() {
+  return (
+    <Svg viewBox="0 0 46 30" width={46} height={30}>
+      <Rect x={0} y={14.5} width={5} height={2} fill={INK} />
+      <Rect x={5} y={12.5} width={26} height={4.5} fill={INK} />
+      <Rect x={31} y={5} width={11} height={12} fill={INK} />
+      <Rect x={32.8} y={7} width={4.6} height={4.6} fill={BOX_BG} />
+      <Circle cx={10} cy={21.5} r={3} fill={INK} />
+      <Circle cx={20} cy={21.5} r={3} fill={INK} />
+      <Circle cx={36.5} cy={21.5} r={3} fill={INK} />
+    </Svg>
+  )
+}
+
+// Dot grid (NET)
+function NetGridIcon() {
+  const dots = []
+  for (let r = 0; r < 4; r++)
+    for (let c = 0; c < 8; c++)
+      dots.push(<Rect key={`n${r}-${c}`} x={c * 4.2} y={r * 4.2} width={3.1} height={3.1} fill={INK} />)
+  return (
+    <Svg viewBox="0 0 34 17" width={34} height={17}>
+      {dots}
+    </Svg>
+  )
+}
+
+// Row Y centers inside the fields box (box-relative)
+const ROW = { gross: 112, tare: 155, net: 196 }
+// Column X positions inside the fields box
+const COL = { icon: 10, label: 62, value: 122, kg: 299, date: 341, dateVal: 392, time: 588, timeVal: 638 }
+
+function WeighRow({ y, icon, label, value, kg, date, dateVal, time, timeVal }) {
+  return (
+    <>
+      <View style={[S.icon, { left: COL.icon, top: y - 14 }]}>{icon}</View>
+      <Text style={[S.wLbl, { left: COL.label, top: y - 6 }]}>{label}</Text>
+      <Text style={[S.wVal, { left: COL.value, top: y - 6 }]}>{value || ' '}</Text>
+      {kg && <Text style={[S.wLbl, { left: COL.kg, top: y - 6 }]}>KG.</Text>}
+      {date && <Text style={[S.wLbl, { left: COL.date, top: y - 6 }]}>DATE :</Text>}
+      {date && <Text style={[S.wVal, { left: COL.dateVal, top: y - 6 }]}>{dateVal || ' '}</Text>}
+      {time && <Text style={[S.wLbl, { left: COL.time, top: y - 6 }]}>TIME :</Text>}
+      {time && <Text style={[S.wVal, { left: COL.timeVal, top: y - 6 }]}>{timeVal || ' '}</Text>}
+    </>
+  )
+}
+
+// 'YYYY-MM-DD' -> 'DD-MM-YYYY'
+const fmtDate = (d) => (d && /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('-') : d)
+
+const NOTE_LINES = [
+  'વે-બ્રિજ થી નિકળ્યા બાદ વજનમાં થતાં ફેરફાર માટે વે-બ્રિજ જવાબદાર નથી.',
+  'કહેવાથી લખાવેલ બારદાન માટે વે-બ્રિજ જવાબદાર નથી.',
+  'વાહન નંબર ફેરફાર માટે વે-બ્રિજ જવાબદાર નથી.',
+]
 
 export default function WeighBridgePDF({ data }) {
   return (
     <Document>
-      <Page size={[900, 380]} style={S.page}>
-        <View style={S.outer}>
+      <Page size={[PAGE_W, PAGE_H]} style={S.page}>
 
-          {/* HEADER */}
-          <View style={S.header}>
-            <View style={S.sideBox}>
-              <View style={S.sideNumWrap}>
-                <Text style={S.sideNum}>24</Text>
-              </View>
-              <View style={S.sideBadge}>
-                <Text style={S.sideTxt}>HOURS</Text>
-                <Text style={S.sideTxt}>SERVICE</Text>
-              </View>
-            </View>
+        {/* Outer printed border */}
+        <View style={S.outerBorder} />
 
-            <View style={S.center}>
-              <Text style={S.companyName}>SHREE JAY AMBIKA WEIGH BRIDGE</Text>
-              <View style={S.banner}>
-                <Text style={S.bannerTxt}>FULLY COMPUTERISED WEIGH-BRIDGE</Text>
-              </View>
-              <Text style={S.address}>6 - MAVDI PLOT CORNER, MAVDI ROAD, RAJKOT. Mo. : 63547 98792</Text>
-              <Text style={S.approved}>(A GOVERNMENT APPROVED)</Text>
-            </View>
-
-            <View style={S.sideBox}>
-              <View style={S.sideNumWrap}>
-                <Text style={S.sideNum}>50</Text>
-              </View>
-              <View style={S.sideBadge}>
-                <Text style={S.sideTxt}>METRIC TONS</Text>
-                <Text style={S.sideTxt}>COMPUTERISED</Text>
-              </View>
-            </View>
+        {/* 24 HOURS SERVICE box */}
+        <View style={[S.sideBox, { left: 16 }]}>
+          <View style={S.sideNumWrap}>
+            <Text style={S.sideNum}>24</Text>
           </View>
-
-          {/* SERIAL / VEHICLE / PARTY / MATERIAL */}
-          <View style={S.fieldsBlock}>
-            <View style={S.row}>
-              <View style={S.grp}>
-                <Text style={S.lbl}>SERIAL No. :</Text>
-                <Text style={S.val}>{data.serialNo}</Text>
-              </View>
-              <View style={{ width: 30 }} />
-              <View style={S.grp}>
-                <Text style={S.lbl}>VEHICLE No. :</Text>
-                <Text style={S.val}>{data.vehicleNo}</Text>
-              </View>
-            </View>
-            <View style={S.row}>
-              <View style={S.grp}>
-                <Text style={S.lbl}>PARTY :</Text>
-                <Text style={S.val}>{data.party}</Text>
-              </View>
-              <View style={{ width: 30 }} />
-              <View style={S.grp}>
-                <Text style={S.lbl}>MATERIAL :</Text>
-                <Text style={S.val}>{data.material}</Text>
-              </View>
-            </View>
+          <View style={S.sideBadge}>
+            <Text style={S.sideTxt}>HOURS</Text>
+            <Text style={S.sideTxt}>SERVICE</Text>
           </View>
-
-          {/* GROSS */}
-          <View style={S.wRow}>
-            <View style={S.wIcon}>
-              <Svg viewBox="0 0 44 26" width={44} height={26}>
-                <Rect x="1" y="1" width="24" height="11" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Line x1="9" y1="1" x2="9" y2="12" stroke="#cc0000" strokeWidth="0.8"/>
-                <Line x1="17" y1="1" x2="17" y2="12" stroke="#cc0000" strokeWidth="0.8"/>
-                <Line x1="1" y1="6" x2="25" y2="6" stroke="#cc0000" strokeWidth="0.8"/>
-                <Rect x="1" y="12" width="28" height="8" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Rect x="29" y="15" width="13" height="5" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Line x1="29" y1="17.5" x2="42" y2="17.5" stroke="#cc0000" strokeWidth="0.8"/>
-                <Path d="M 4.5 22 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Path d="M 17.5 22 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Path d="M 32.5 22 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-              </Svg>
-            </View>
-            <Text style={S.wLbl}>GROSS :</Text>
-            <Text style={S.wVal}>{data.gross}</Text>
-            <Text style={S.kg}>KG.</Text>
-            <Text style={S.dLbl}>DATE :</Text>
-            <Text style={S.dVal}>{data.grossDate}</Text>
-            <Text style={S.tLbl}>TIME :</Text>
-            <Text style={S.tVal}>{data.grossTime}</Text>
-          </View>
-
-          {/* TARE */}
-          <View style={S.wRow}>
-            <View style={S.wIcon}>
-              <Svg viewBox="0 0 44 26" width={44} height={26}>
-                <Rect x="1" y="6" width="28" height="8" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Rect x="29" y="9" width="13" height="5" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Line x1="29" y1="11.5" x2="42" y2="11.5" stroke="#cc0000" strokeWidth="0.8"/>
-                <Path d="M 4.5 16 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Path d="M 17.5 16 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Path d="M 32.5 16 m -2.5 0 a 2.5 2.5 0 1 0 5 0 a 2.5 2.5 0 1 0 -5 0" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-              </Svg>
-            </View>
-            <Text style={S.wLbl}>TARE :</Text>
-            <Text style={S.wVal}>{data.tare}</Text>
-            <Text style={S.kg}>KG.</Text>
-            <Text style={S.dLbl}>DATE :</Text>
-            <Text style={S.dVal}>{data.tareDate}</Text>
-            <Text style={S.tLbl}>TIME :</Text>
-            <Text style={S.tVal}>{data.tareTime}</Text>
-          </View>
-
-          {/* NET */}
-          <View style={S.wRow}>
-            <View style={S.wIcon}>
-              <Svg viewBox="0 0 44 26" width={44} height={26}>
-                <Rect x="1" y="6" width="24" height="11" fill="none" stroke="#cc0000" strokeWidth="1.2"/>
-                <Line x1="9" y1="6" x2="9" y2="17" stroke="#cc0000" strokeWidth="0.8"/>
-                <Line x1="17" y1="6" x2="17" y2="17" stroke="#cc0000" strokeWidth="0.8"/>
-                <Line x1="1" y1="11" x2="25" y2="11" stroke="#cc0000" strokeWidth="0.8"/>
-              </Svg>
-            </View>
-            <Text style={S.wLbl}>NET :</Text>
-            <Text style={S.wVal}>{data.net}</Text>
-            <Text style={S.kg}>KG.</Text>
-          </View>
-
-          {/* GUJARATI NOTES */}
-          <View style={S.notes}>
-            <Text style={S.guj}>{'સૂચના : ■ વજન કરતી વખતે બન્ને પાર્ટીએ પોતાના જવાબદાર માણસને ગાડી સાથે મોકલી વજન તપાસી લેવું.'}</Text>
-            <Text style={S.guj}>{'■ વે-બ્રિજ થી નિકળ્યા બાદ વજનમાં થતાં ફેરફાર માટે વે-બ્રિજ જવાબદાર નથી.'}</Text>
-            <Text style={S.guj}>{'■ કહેવાથી લખાયેલ બારદાન માટે વે-બ્રિજ જવાબદાર નથી.'}</Text>
-            <Text style={S.guj}>{'■ વાહન નંબર ફેરફાર માટે વે-બ્રિજ જવાબદાર નથી.'}</Text>
-            <View style={S.sigRow}>
-              <Text style={S.lat}>{'■ Subject to Rajkot Jurisdiction.'}</Text>
-              <Text style={S.sig}>Operator Signature</Text>
-              <Text style={S.sig}>{"Driver's Signature"}</Text>
-            </View>
-          </View>
-
         </View>
+
+        {/* 50 METRIC TONS box */}
+        <View style={[S.sideBox, { left: 730 }]}>
+          <View style={S.sideNumWrap}>
+            <Text style={S.sideNum}>50</Text>
+          </View>
+          <View style={S.sideBadge}>
+            <Text style={S.sideTxtSm}>METRIC TONS</Text>
+            <Text style={S.sideTxtSm}>COMPUTERISED</Text>
+          </View>
+        </View>
+
+        {/* Header center */}
+        <View style={S.center}>
+          <Text style={S.companyName}>SHREE JAY AMBIKA WEIGH BRIDGE</Text>
+          <View style={S.banner}>
+            <Text style={S.bannerTxt}>FULLY  COMPUTERISED WEIGH-BRIDGE</Text>
+          </View>
+          <Text style={S.address}>6 - MAVDI PLOT CORNER, MAVDI ROAD, RAJKOT. Mo. : 63547 98792</Text>
+          <Text style={S.approved}>(A GOVERNMENT APPROVED)</Text>
+        </View>
+
+        {/* Fields box */}
+        <View style={S.fieldsBox}>
+          <Text style={[S.lbl, { left: 14, top: 20 }]}>SERIAL No.:</Text>
+          <Text style={[S.val, { left: 98, top: 20 }]}>{data.serialNo || ' '}</Text>
+          <Text style={[S.lbl, { left: 526, top: 20 }]}>VEHICLE No. :</Text>
+          <Text style={[S.val, { left: 622, top: 20 }]}>{data.vehicleNo || ' '}</Text>
+
+          <Text style={[S.lbl, { left: 14, top: 44 }]}>PARTY :</Text>
+          <Text style={[S.val, { left: 74, top: 44 }]}>{data.party || ' '}</Text>
+          <Text style={[S.lbl, { left: 554, top: 44 }]}>MATERIAL :</Text>
+          <Text style={[S.val, { left: 634, top: 44 }]}>{data.material || ' '}</Text>
+
+          <WeighRow y={ROW.gross} icon={<TruckLoadedIcon />} label="GROSS :" value={data.gross}
+            kg date dateVal={fmtDate(data.grossDate)} time timeVal={data.grossTime} />
+          <WeighRow y={ROW.tare} icon={<TruckEmptyIcon />} label="TARE :" value={data.tare}
+            kg date dateVal={fmtDate(data.tareDate)} time timeVal={data.tareTime} />
+          <WeighRow y={ROW.net} icon={<NetGridIcon />} label="NET :" value={data.net} kg />
+        </View>
+
+        {/* Notes */}
+        <View style={[S.noteRow, { left: 8, top: 352 }]}>
+          <Text style={S.gujLead}>{'સુચના : '}</Text>
+          <View style={S.bullet} />
+          <Text style={S.guj}>વજન કરતી વખતે બન્ને પાર્ટીએ પોતાના જવાબદાર માણસને ગાડી સાથે મોકલી વજન તપાસી લેવું.</Text>
+        </View>
+        {NOTE_LINES.map((line, i) => (
+          <View key={i} style={[S.noteRow, { left: 68, top: 374 + i * 20 }]}>
+            <View style={S.bullet} />
+            <Text style={S.guj}>{line}</Text>
+          </View>
+        ))}
+        <View style={[S.noteRow, { left: 68, top: 434 }]}>
+          <View style={S.bullet} />
+          <Text style={S.lat}>Subject to Rajkot Jurisdiction.</Text>
+        </View>
+        <Text style={[S.sig, { left: 500, top: 433 }]}>Operator Signature</Text>
+        <Text style={[S.sig, { left: 695, top: 433 }]}>Driver's Signature</Text>
+
+        {/* Printer credit outside the border on the right margin (reads bottom-to-top) */}
+        <View style={{ position: 'absolute', left: 760, top: 361, width: 160, height: 10, transform: 'rotate(-90deg)' }}>
+          <Text style={S.credit}>BALAJI MULTI FORMS - (0281) 2360163</Text>
+        </View>
+
       </Page>
     </Document>
   )
