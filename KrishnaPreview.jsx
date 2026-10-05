@@ -70,7 +70,7 @@ export default function KrishnaPreview({ data }) {
           <span style={{ fontFamily: SANS, fontWeight: 700, fontSize: 12.5, color: INK, whiteSpace: 'pre' }}>2 Kg. </span>
           <span style={{ fontFamily: GUJ, fontWeight: 700, fontSize: 12.5, color: INK }}>સ્કેલ</span>
         </div>
-        <span style={{ ...gujB, left: 472, top: 38, width: 270, fontSize: 14.5, textAlign: 'center' }}>ઇલેક્ટ્રોનિકસ (એવરી ઇન્ડીયા)</span>
+        <span style={{ ...gujB, left: 472, top: 42, width: 270, fontSize: 14.5, textAlign: 'center' }}>ઇલેક્ટ્રોનિકસ (એવરી ઇન્ડીયા)</span>
 
         {/* No. / Date block */}
         <span style={{ ...latB, left: 53, top: 62, fontSize: 21 }}>No.</span>
@@ -82,9 +82,9 @@ export default function KrishnaPreview({ data }) {
         <div style={{ position: 'absolute', left: 326, top: 60 }}>
           <KrishnaArtIcon />
         </div>
-        <span style={{ ...gujB, left: 420, top: 66, width: 332, fontSize: 37, letterSpacing: 1, textAlign: 'center', lineHeight: 1.15 }}>ક્રિષ્ના વે-બ્રીજ</span>
-        <span style={{ ...gujB, left: 420, top: 124, width: 332, fontSize: 13, textAlign: 'center' }}>૪, મવડી પ્લોટ કોર્નર, રાજકોટ-૩૬૦૦૦૪.</span>
-        <span style={{ ...gujB, left: 500, top: 146, width: 252, fontSize: 13.5, textAlign: 'center' }}>મો. ૯૭૨૪૬ ૪૪૫૪૯</span>
+        <span style={{ ...gujB, left: 420, top: 64, width: 332, fontSize: 37, letterSpacing: 1, textAlign: 'center', lineHeight: 1.15 }}>ક્રિષ્ના વે-બ્રીજ</span>
+        <span style={{ ...gujB, left: 420, top: 112, width: 332, fontSize: 13, textAlign: 'center' }}>૪, મવડી પ્લોટ કોર્નર, રાજકોટ-૩૬૦૦૦૪.</span>
+        <span style={{ ...gujB, left: 500, top: 132, width: 252, fontSize: 13.5, textAlign: 'center' }}>મો. ૯૭૨૪૯ ૬૪૫૯૪</span>
 
         {/* ---- Main table ---- */}
         <div style={{ position: 'absolute', left: T.left, top: T.top, width: T.right - T.left, height: ROW2 - T.top, backgroundColor: CELL }} />
@@ -94,7 +94,8 @@ export default function KrishnaPreview({ data }) {
         <div style={{ position: 'absolute', left: T.left, top: T.top, width: T.right - T.left, height: T.bottom - T.top, boxSizing: 'border-box', border: `${BW}px solid ${INK}` }} />
         <div style={{ ...hline, left: T.left, top: ROW1, width: T.right - T.left }} />
         <div style={{ ...hline, left: T.left, top: ROW2, width: T.right - T.left }} />
-        <div style={{ ...hline, left: T.left, top: ROW3, width: T.right - T.left }} />
+        {/* ROW3 stops at the middle column's right edge — the weight zone stays open down to ROW4 */}
+        <div style={{ ...hline, left: T.left, top: ROW3, width: MID_R - T.left }} />
         <div style={{ ...hline, left: T.left, top: ROW4, width: T.right - T.left }} />
         <div style={{ ...hline, left: T.left, top: LEFT_DIV, width: MID_L - T.left }} />
         <div style={{ ...hline, left: MID_L, top: MID1, width: MID_R - MID_L }} />

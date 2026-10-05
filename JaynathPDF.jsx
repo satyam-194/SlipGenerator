@@ -1,11 +1,13 @@
 import React from 'react'
-import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer'
+import { Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer'
 import './fonts.js'
+import jaynathTitle from './jaynathTitle.js'
+import jaynathWatermark from './jaynathWatermark.js'
 
 // Palette sampled from the original JAYNATH slip photo (normalized for clean print)
 const INK = '#3c5490'
 const PAPER = '#f7f6f2'
-const WM = '#cdd7e9'
+const TINT = '#d9e0ec'
 const VAL = '#55618a'
 
 const PAGE_W = 850
@@ -14,19 +16,15 @@ const PAGE_H = 458
 const S = StyleSheet.create({
   page: { backgroundColor: PAPER, fontFamily: 'Helvetica' },
   outerBorder: {
-    position: 'absolute', left: 8, top: 8, width: PAGE_W - 16, height: PAGE_H - 16,
+    position: 'absolute', left: 8, top: 20, width: PAGE_W - 16, height: PAGE_H - 28,
     border: `1.5 solid ${INK}`,
   },
   blessing: { position: 'absolute', fontSize: 7, fontFamily: 'NotoGujarati', fontWeight: 400, color: INK },
 
-  // side boxes: solid blue square, thin white keyline inset, white text,
-  // single thin outer border tight against the square
+  // side boxes: solid blue square with thin white keyline inset and white text
   sideBox: {
     position: 'absolute', top: 24, width: 92, height: 92,
-    border: `1 solid ${INK}`, padding: 1.5,
-  },
-  sideBoxBlue: {
-    flex: 1, backgroundColor: INK, alignItems: 'center', justifyContent: 'center', position: 'relative',
+    backgroundColor: INK, alignItems: 'center', justifyContent: 'center',
   },
   sideKeyline: { position: 'absolute', left: 2.5, top: 2.5, right: 2.5, bottom: 2.5, border: '1.2 solid #ffffff' },
   sideNum: { fontSize: 42, fontFamily: 'Deco', color: '#ffffff', lineHeight: 1 },
@@ -34,15 +32,12 @@ const S = StyleSheet.create({
   sideSmall: { fontSize: 8.6, fontFamily: 'Helvetica-Bold', color: '#ffffff', textAlign: 'center' },
 
   // header center
-  center: { position: 'absolute', left: 178, top: 26, width: 526, alignItems: 'center' },
-  title: { fontSize: 36, fontFamily: 'Deco', color: INK, letterSpacing: 2 },
-  propBand: { backgroundColor: INK, paddingHorizontal: 70, paddingVertical: 3.5, marginTop: 2 },
+  // header center — fixed positions so browser and PDF match exactly
+  propBand: { position: 'absolute', left: 211, top: 75, width: 460, height: 20.5, backgroundColor: INK, alignItems: 'center', justifyContent: 'center' },
   propTxt: { color: '#ffffff', fontSize: 12.5, fontFamily: 'Helvetica-Bold' },
-  address: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: INK, marginTop: 4 },
+  address: { position: 'absolute', left: 178, top: 101.5, width: 526, fontSize: 13, fontFamily: 'Helvetica-Bold', color: INK, textAlign: 'center' },
 
   rule: { position: 'absolute', left: 8, width: PAGE_W - 16, height: 1.5, backgroundColor: INK },
-
-  watermark: { position: 'absolute', left: 195, top: 165, fontSize: 90, fontFamily: 'Helvetica-Bold', color: WM, letterSpacing: 8 },
 
   lbl: { position: 'absolute', fontSize: 13.5, fontFamily: 'Helvetica-Bold', color: INK },
   val: { position: 'absolute', fontSize: 14, fontFamily: 'DotMatrix', color: VAL, letterSpacing: 1 },
@@ -72,45 +67,45 @@ export default function JaynathPDF({ data }) {
     <Document>
       <Page size={[PAGE_W, PAGE_H]} style={S.page}>
 
+        {/* Header strip tint (runs from the top border down to the divider rule) */}
+        <View style={{ position: 'absolute', left: 8, top: 20, width: PAGE_W - 16, height: 101, backgroundColor: TINT }} />
+        {/* Bottom notes box tint (from the notes rule down to the outer border) */}
+        <View style={{ position: 'absolute', left: 8, top: 354, width: PAGE_W - 16, height: 96, backgroundColor: TINT }} />
+
         <View style={S.outerBorder} />
 
-        {/* Top blessings */}
-        <Text style={[S.blessing, { left: 150, top: 13 }]}>॥ સત્યમેવ જયતે ॥</Text>
-        <Text style={[S.blessing, { left: 420, top: 13 }]}>॥ શ્રી શક્તિ કૃપા ॥</Text>
+        {/* Top blessings — outside the border */}
+        <Text style={[S.blessing, { left: 150, top: 6 }]}>॥ સત્યમેવ જયતે ॥</Text>
+        <Text style={[S.blessing, { left: 420, top: 6 }]}>॥ શ્રી શક્તિ કૃપા ॥</Text>
+        <Text style={[S.blessing, { left: 690, top: 6 }]}>॥ જય માતાજી ॥</Text>
 
         {/* 50 METRIC TONS box (left): white 50 over solid blue */}
         <View style={[S.sideBox, { left: 74 }]}>
-          <View style={S.sideBoxBlue}>
-            <View style={S.sideKeyline} />
-            <Text style={S.sideNum}>50</Text>
-            <Text style={[S.sideSmall, { marginTop: 3 }]}>METRIC TONS</Text>
-            <Text style={S.sideSmall}>COMPUTERISED</Text>
-          </View>
+          <View style={S.sideKeyline} />
+          <Text style={S.sideNum}>50</Text>
+          <Text style={[S.sideSmall, { marginTop: 3 }]}>METRIC TONS</Text>
+          <Text style={S.sideSmall}>COMPUTERIESD</Text>
         </View>
 
         {/* SERVICE 24 HOURS box (right): white text over solid blue */}
         <View style={[S.sideBox, { left: 712 }]}>
-          <View style={S.sideBoxBlue}>
-            <View style={S.sideKeyline} />
-            <Text style={[S.sideSmall, { fontSize: 10 }]}>SERVICE</Text>
-            <Text style={S.sideNum24}>24</Text>
-            <Text style={[S.sideSmall, { fontSize: 10 }]}>HOURS</Text>
-          </View>
+          <View style={S.sideKeyline} />
+          <Text style={[S.sideSmall, { fontSize: 10 }]}>SERVICE</Text>
+          <Text style={S.sideNum24}>24</Text>
+          <Text style={[S.sideSmall, { fontSize: 10 }]}>HOURS</Text>
         </View>
 
         {/* Header center */}
-        <View style={S.center}>
-          <Text style={S.title}>JAYNATH WEIGH BRIDGE</Text>
-          <View style={S.propBand}>
-            <Text style={S.propTxt}>Prop. : Kirti Industries</Text>
-          </View>
-          <Text style={S.address}>Gondal Road, Nr. S.T. Work Shop, Rajkot. Mo. 99245 05555, 99243 10061</Text>
+        <Image src={jaynathTitle} style={{ position: 'absolute', left: 181, top: 28, width: 520, height: 43.8 }} />
+        <View style={S.propBand}>
+          <Text style={S.propTxt}>Prop. : Kirti Industries</Text>
         </View>
+        <Text style={S.address}>Gondal Road, Nr. S.T. Work Shop, Rajkot. Mo. 99245 05555, 99243 10061</Text>
 
         <View style={[S.rule, { top: 121 }]} />
 
-        {/* Watermark */}
-        <Text style={S.watermark}>JAYNATH</Text>
+        {/* Watermark (same lettering as the title) */}
+        <Image src={jaynathWatermark} style={{ position: 'absolute', left: 190, top: 181, width: 480, height: 113.4 }} />
 
         {/* Left column */}
         <Text style={[S.lbl, { left: 80, top: 136 }]}>Ticket No.</Text>
@@ -146,13 +141,13 @@ export default function JaynathPDF({ data }) {
 
         <View style={[S.rule, { top: 354 }]} />
 
-        {/* Gujarati notes */}
-        <Text style={[S.guj, { left: 80, top: 362 }]}>(૧) વજન કરતી વખતે પાર્ટીએ પોતાના જવાબદાર માણસને ગાડી સાથે મોકલી વજન તપાસી લેવું.</Text>
-        <Text style={[S.guj, { left: 80, top: 383 }]}>(૨) વજન થઈ ગયા પછી અમારી કોઈપણ જાતની જવાબદારી રહેતી નથી.</Text>
-        <Text style={[S.guj, { left: 80, top: 404 }]}>(૩) ગાડીની અંદર શું માલ છે તે તપાસવામાં આવતો નથી.</Text>
+        {/* Gujarati notes (inside the bottom box) */}
+        <Text style={[S.guj, { left: 80, top: 360 }]}>(૧) વજન કરતી વખતે પાર્ટીએ પોતાના જવાબદાર માણસને ગાડી સાથે મોકલી વજન તપાસી લેવું.</Text>
+        <Text style={[S.guj, { left: 80, top: 379 }]}>(૨) વજન થઈ ગયા પછી અમારી કોઈપણ જાતની જવાબદારી રહેતી નથી.</Text>
+        <Text style={[S.guj, { left: 80, top: 398 }]}>(૩) ગાડીની અંદર શું માલ છે તે તપાસવામાં આવતો નથી.</Text>
 
-        <Text style={[S.opSig, { left: 728, top: 400 }]}>Operator's Signature</Text>
-        <Text style={[S.fully, { left: 350, top: 412 }]}>FULLY COMPUTERISED WEIGH BRIDGE</Text>
+        <Text style={[S.opSig, { left: 728, top: 398 }]}>Operator's Signature</Text>
+        <Text style={[S.fully, { left: 350, top: 404 }]}>FULLY COMPUTERRISED WEIGH BRIDGE</Text>
         <Text style={[S.lat, { left: 80, top: 428 }]}>Subject to Rajkot Jurisdiction.</Text>
 
       </Page>

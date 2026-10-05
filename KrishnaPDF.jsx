@@ -72,7 +72,7 @@ export default function KrishnaPDF({ data }) {
           <Text style={{ fontFamily: 'Helvetica-Bold', fontSize: 12.5, color: INK, marginTop: 2 }}>2 Kg. </Text>
           <Text style={{ fontFamily: 'NotoGujarati', fontWeight: 700, fontSize: 12.5, color: INK }}>સ્કેલ</Text>
         </View>
-        <Text style={[S.gujB, { left: 472, top: 38, width: 270, fontSize: 14.5, textAlign: 'center' }]}>ઇલેક્ટ્રોનિકસ (એવરી ઇન્ડીયા)</Text>
+        <Text style={[S.gujB, { left: 472, top: 42, width: 270, fontSize: 14.5, textAlign: 'center' }]}>ઇલેક્ટ્રોનિકસ (એવરી ઇન્ડીયા)</Text>
 
         {/* No. / Date block */}
         <Text style={[S.latB, { left: 53, top: 62, fontSize: 21 }]}>No.</Text>
@@ -84,9 +84,9 @@ export default function KrishnaPDF({ data }) {
         <View style={{ position: 'absolute', left: 326, top: 60 }}>
           <KrishnaArtIcon />
         </View>
-        <Text style={[S.gujB, { left: 420, top: 66, width: 332, fontSize: 37, letterSpacing: 1, textAlign: 'center' }]}>ક્રિષ્ના વે-બ્રીજ</Text>
-        <Text style={[S.gujB, { left: 420, top: 124, width: 332, fontSize: 13, textAlign: 'center' }]}>૪, મવડી પ્લોટ કોર્નર, રાજકોટ-૩૬૦૦૦૪.</Text>
-        <Text style={[S.gujB, { left: 500, top: 146, width: 252, fontSize: 13.5, textAlign: 'center' }]}>મો. ૯૭૨૪૬ ૪૪૫૪૯</Text>
+        <Text style={[S.gujB, { left: 420, top: 64, width: 332, fontSize: 37, letterSpacing: 1, textAlign: 'center' }]}>ક્રિષ્ના વે-બ્રીજ</Text>
+        <Text style={[S.gujB, { left: 420, top: 112, width: 332, fontSize: 13, textAlign: 'center' }]}>૪, મવડી પ્લોટ કોર્નર, રાજકોટ-૩૬૦૦૦૪.</Text>
+        <Text style={[S.gujB, { left: 500, top: 132, width: 252, fontSize: 13.5, textAlign: 'center' }]}>મો. ૯૭૨૪૯ ૬૪૫૯૪</Text>
 
         {/* ---- Main table ---- */}
         {/* white cell fills (whole table is white, like the printed slip) */}
@@ -98,7 +98,8 @@ export default function KrishnaPDF({ data }) {
         {/* horizontal rules */}
         <View style={[S.hline, { left: T.left, top: ROW1, width: T.right - T.left }]} />
         <View style={[S.hline, { left: T.left, top: ROW2, width: T.right - T.left }]} />
-        <View style={[S.hline, { left: T.left, top: ROW3, width: T.right - T.left }]} />
+        {/* ROW3 stops at the middle column's right edge — the weight zone stays open down to ROW4 */}
+        <View style={[S.hline, { left: T.left, top: ROW3, width: MID_R - T.left }]} />
         <View style={[S.hline, { left: T.left, top: ROW4, width: T.right - T.left }]} />
         <View style={[S.hline, { left: T.left, top: LEFT_DIV, width: MID_L - T.left }]} />
         <View style={[S.hline, { left: MID_L, top: MID1, width: MID_R - MID_L }]} />
