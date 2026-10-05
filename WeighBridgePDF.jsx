@@ -111,7 +111,7 @@ function NetGridIcon() {
 // Row Y centers inside the fields box (box-relative)
 const ROW = { gross: 112, tare: 155, net: 196 }
 // Column X positions inside the fields box
-const COL = { icon: 10, label: 62, value: 122, kg: 299, date: 341, dateVal: 392, time: 588, timeVal: 638 }
+const COL = { icon: 10, label: 62, value: 122, kg: 299, date: 341, dateVal: 392, time: 588, timeVal: 638, charges: 500, chargesVal: 610 }
 
 function WeighRow({ y, icon, label, value, kg, date, dateVal, time, timeVal }) {
   return (
@@ -203,6 +203,10 @@ export default function WeighBridgePDF({ data }) {
           <WeighRow y={ROW.tare} icon={<TruckEmptyIcon />} label="TARE :" value={data.tare}
             kg date dateVal={fmtDate(data.tareDate)} time timeVal={fmtTime(data.tareTime)} />
           <WeighRow y={ROW.net} icon={<NetGridIcon />} label="NET :" value={data.net} kg />
+
+          {/* Charges — sits on the NET row, right-hand side */}
+          <Text style={[S.wLbl, { left: COL.charges, top: ROW.net - 6 }]}>Charges(Rs) :</Text>
+          <Text style={[S.wVal, { left: COL.chargesVal, top: ROW.net - 6 }]}>{data.charges || ' '}</Text>
         </View>
 
         {/* Notes */}

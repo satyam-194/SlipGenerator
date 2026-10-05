@@ -4,6 +4,8 @@ import WeighBridgePDF from './WeighBridgePDF.jsx'
 import SlipPreview from './SlipPreview.jsx'
 import JaynathPDF from './JaynathPDF.jsx'
 import JaynathPreview from './JaynathPreview.jsx'
+import KrishnaPDF from './KrishnaPDF.jsx'
+import KrishnaPreview from './KrishnaPreview.jsx'
 
 const initialData = {
   serialNo: '',
@@ -19,6 +21,8 @@ const initialData = {
   tareDate: '',
   tareTime: '',
   net: '',
+  remark: '',
+  weigherName: '',
 }
 
 const TEMPLATES = [
@@ -40,6 +44,15 @@ const TEMPLATES = [
     Preview: JaynathPreview,
     Doc: JaynathPDF,
   },
+  {
+    id: 'krishna',
+    name: 'Krishna Weigh Bridge',
+    sub: 'Orange slip • Mavdi Plot, Rajkot',
+    color: '#e14b2a',
+    labels: { serialNo: 'No.', party: 'Seller (વેચનાર)', material: 'Material (મીલની જાત)' },
+    Preview: KrishnaPreview,
+    Doc: KrishnaPDF,
+  },
 ]
 
 function LandingPage({ onStart }) {
@@ -50,7 +63,7 @@ function LandingPage({ onStart }) {
         <span className="text-2xl">🧾</span>
         <div>
           <div className="text-lg font-extrabold text-red-600 leading-none">WEIGH BRIDGE SLIP GENERATOR</div>
-          <div className="text-xs text-red-400">Shree Jay Ambika • Jaynath</div>
+          <div className="text-xs text-red-400">Shree Jay Ambika • Jaynath • Krishna</div>
         </div>
       </nav>
 
@@ -65,8 +78,8 @@ function LandingPage({ onStart }) {
         <p className="text-red-400 text-sm text-center mb-8">Pixel-perfect replicas of real weigh bridge slips, ready to print</p>
 
         <div className="bg-white border-2 border-red-200 rounded-2xl px-8 py-6 shadow max-w-md w-full text-center mb-8">
-          <p className="text-red-700 font-semibold text-lg mb-1">Two Slip Designs</p>
-          <p className="text-red-400 text-sm">Choose Shree Jay Ambika (red) or Jaynath (blue), fill in the details and download a ready-to-print PDF slip.</p>
+          <p className="text-red-700 font-semibold text-lg mb-1">Three Slip Designs</p>
+          <p className="text-red-400 text-sm">Choose Shree Jay Ambika (red), Jaynath (blue) or Krishna (orange), fill in the details and download a ready-to-print PDF slip.</p>
         </div>
 
         <div className="flex gap-4 flex-wrap justify-center mb-10">
@@ -77,6 +90,10 @@ function LandingPage({ onStart }) {
           <div className="bg-white border border-red-200 rounded-xl px-5 py-3 text-center shadow">
             <div className="text-3xl font-extrabold" style={{ color: '#3c5490' }}>■</div>
             <div className="text-xs font-bold text-red-400">JAYNATH</div>
+          </div>
+          <div className="bg-white border border-red-200 rounded-xl px-5 py-3 text-center shadow">
+            <div className="text-3xl font-extrabold" style={{ color: '#e14b2a' }}>■</div>
+            <div className="text-xs font-bold text-red-400">KRISHNA</div>
           </div>
           <div className="bg-white border border-red-200 rounded-xl px-5 py-3 text-center shadow">
             <div className="text-3xl font-extrabold text-red-600">⚡</div>
@@ -124,6 +141,7 @@ function SlipGenerator() {
   const template = TEMPLATES.find((t) => t.id === templateId)
   const { labels, Preview, Doc } = template
   const isJaynath = templateId === 'jaynath'
+  const isKrishna = templateId === 'krishna'
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -158,6 +176,12 @@ function SlipGenerator() {
         page: 'bg-blue-50', nav: 'border-blue-900', title: 'text-blue-900', sub: 'text-blue-400',
         card: 'border-blue-200', heading: 'text-blue-900', headingBorder: 'border-blue-100',
         label: 'text-blue-900', input: 'border-blue-300 focus:ring-blue-400', net: 'bg-blue-50 text-blue-900',
+      }
+    : isKrishna
+    ? {
+        page: 'bg-orange-50', nav: 'border-orange-600', title: 'text-orange-600', sub: 'text-orange-400',
+        card: 'border-orange-200', heading: 'text-orange-600', headingBorder: 'border-orange-100',
+        label: 'text-orange-700', input: 'border-orange-300 focus:ring-orange-400', net: 'bg-orange-50 text-orange-700',
       }
     : {
         page: 'bg-red-50', nav: 'border-red-600', title: 'text-red-600', sub: 'text-red-400',
@@ -209,12 +233,18 @@ function SlipGenerator() {
               <div><label className={labelClass}>{labels.party}</label><input className={inputClass} name="party" value={data.party} onChange={handleChange} placeholder={`${labels.party} name`} /></div>
               <div><label className={labelClass}>{labels.material}</label><input className={inputClass} name="material" value={data.material} onChange={handleChange} placeholder="e.g. Sand" /></div>
             </div>
-            {isJaynath && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-                <div><label className={labelClass}>Supplier Name</label><input className={inputClass} name="supplierName" value={data.supplierName} onChange={handleChange} placeholder="Supplier name" /></div>
-                <div><label className={labelClass}>Charges (₹)</label><input className={inputClass} name="charges" value={data.charges} onChange={handleChange} placeholder="e.g. 180" /></div>
-              </div>
-            )}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+              {(isJaynath || isKrishna) && (
+                <div><label className={labelClass}>{isKrishna ? 'Buyer (ખરીદનાર)' : 'Supplier Name'}</label><input className={inputClass} name="supplierName" value={data.supplierName} onChange={handleChange} placeholder={isKrishna ? 'Buyer name' : 'Supplier name'} /></div>
+              )}
+              <div><label className={labelClass}>Charges (₹)</label><input className={inputClass} name="charges" value={data.charges} onChange={handleChange} placeholder="e.g. 180" /></div>
+              {isKrishna && (
+                <>
+                  <div><label className={labelClass}>Remark (રીમાર્ક)</label><input className={inputClass} name="remark" value={data.remark} onChange={handleChange} placeholder="Remark" /></div>
+                  <div><label className={labelClass}>Weigher Name (તોલનાર)</label><input className={inputClass} name="weigherName" value={data.weigherName} onChange={handleChange} placeholder="e.g. KISHORBHAI" /></div>
+                </>
+              )}
+            </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
               <div><label className={labelClass}>Gross Weight (KG)</label><input className={inputClass} name="gross" type="number" value={data.gross} onChange={handleChange} placeholder="e.g. 15000" /></div>
               <div><label className={labelClass}>Gross Date</label><input className={inputClass} name="grossDate" type="date" value={data.grossDate} onChange={handleChange} /></div>
